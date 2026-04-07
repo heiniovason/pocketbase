@@ -1,0 +1,4 @@
+pb_data/
+mailpit_data/
+dev-environment/*.env
+.vscode

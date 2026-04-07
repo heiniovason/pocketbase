@@ -1,0 +1,77 @@
+services:
+  pocketbase:
+    image: pocketbase:dev
+    hostname: pocketbase
+    container_name: backend
+    build:
+      context: .
+      dockerfile: docker/pb/Dockerfile
+    restart: unless-stopped
+    # 8090 is accessible open for dev debug purposes.
+    ports:
+      - "8090:8090"
+    environment:
+      - PB_PUBLIC_URL=${PB_PUBLIC_URL:-https://pb.dev.localhost}
+    env_file:
+      - dev-environment/pb.env
+    volumes:
+      - ./pb_data:/pb/pb_data
+      - ./pb_public:/pb/pb_public
+      - ./pb_hooks:/pb/pb_hooks
+    networks:
+      - pocketbase
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - mailpit
+
+  mailpit:
+    image: axllent/mailpit:v1.29.4
+    hostname: mailpit
+    container_name: mail-server
+    restart: unless-stopped
+    volumes:
+        - mailpit_data:/data
+    ports:
+        - 8025:8025
+        - 1025:1025
+    environment:
+        MP_MAX_MESSAGES: 5000
+        MP_DATABASE: /data/mailpit.db
+        MP_SMTP_AUTH_ACCEPT_ANY: 1
+        MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - pocketbase
+
+  caddy:
+    image: caddy:2.9.1-alpine
+    hostname: caddy
+    container_name: reverse-proxy 
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - dev-environment/caddy.env
+    volumes:
+      - ./conf/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - pocketbase
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+
+networks:
+  pocketbase:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  mailpit_data:
