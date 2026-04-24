@@ -4,7 +4,7 @@ The sole purpose of this repo is to maintain, build and release a custom PocketB
 
 This means that **compose.yml is for local development and integration testing only**. It spins up an environment including Mailpit for SMTP testing and Caddy for reverse-proxy simulation.
 
-To ensure the **Pocketbase** application container is ready for use immediately upon startup the `entrypoint.sh` bootstraps it with a superuser and directory structure on every boot.
+To ensure the Pocketbase application container is ready for use immediately, entrypoint.sh creates a superuser on first boot and writes pb_data/.superuser_created to prevent the upsert from running on subsequent restarts. Deleting this file will recreate the superuser on next boot, overwriting any password changes made since.
 
 A built-in healthcheck in the Dockerfile monitors the **Pocketbase** `/api/health` endpoint. This makes the image "orchestrator-aware", allowing tools like Docker Swarm or Kubernetes to automatically detect hangs and restart the service to maintain uptime.
 
