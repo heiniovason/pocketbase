@@ -32,6 +32,4 @@ jobs:
           context: .
           file: docker/pb/Dockerfile
           push: true
-          tags: |
-            heiniovason/pocketbase:${{ steps.version.outputs.VERSION }}
-            heiniovason/pocketbase:latest
+          tags: heiniovason/pocketbase:${{ steps.version.outputs.VERSION }}
