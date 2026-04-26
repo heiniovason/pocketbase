@@ -1,10 +1,11 @@
 onBootstrap((e) => {
     e.next(); 
+    console.log("APP_ENV:", process.env.APP_ENV);
+    if (process.env.APP_ENV !== "development") {
+        return;
+    }
 
     const settings = $app.settings();
-    if (settings.smtp.host === "mailpit") {
-        return; 
-    }
 
     // Debugging purposes - will print every available object method/property to your docker logs
     //console.log("Available on settings:", Object.keys(settings));
