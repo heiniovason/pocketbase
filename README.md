@@ -32,3 +32,14 @@ Pocketbase index: https://pb.dev.localhost
 Pocketbase admin login: https://pb.dev.localhost/_/
 
 Mailpit UI: http://localhost:8025
+
+## Hooks
+
+`pb_hooks/` is empty in this image. To use hooks in a derived image, COPY them in your own Dockerfile:
+
+```dockerfile
+FROM heiniovason/pocketbase:1.0.0
+COPY pb_hooks/ /pb/pb_hooks/
+```
+
+In development, hooks are mounted via the bind mount defined in `compose.yml`.
