@@ -33,6 +33,16 @@ Pocketbase admin login: https://pb.dev.localhost/_/
 
 Mailpit UI: http://localhost:8025
 
+## Architecture
+
+The image is published as a multi-arch manifest supporting `linux/amd64` and `linux/arm64`, so it runs natively on both x86-64 servers and ARM-based hosts (AWS Graviton, Apple Silicon).
+
+To build locally for a specific architecture:
+
+```bash
+docker buildx build --platform linux/arm64 -t pocketbase:local .
+```
+
 ## Hooks
 
 `pb_hooks/` is empty in this image. To use hooks in a derived image, COPY them in your own Dockerfile:

@@ -14,8 +14,9 @@ ENV PB_DATA_DIR=/pb/pb_data \
     PB_PUBLIC_DIR=/pb/pb_public \
     PB_HTTP_ADDR=0.0.0.0:8090
 
-ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
-RUN unzip /tmp/pb.zip -d /pb/ && \
+ARG TARGETARCH=amd64
+RUN curl -fsSL "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_${TARGETARCH}.zip" -o /tmp/pb.zip && \
+    unzip /tmp/pb.zip -d /pb/ && \
     rm /tmp/pb.zip && \
     chmod +x /pb/pocketbase
 
